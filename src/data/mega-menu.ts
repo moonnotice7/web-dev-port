@@ -52,7 +52,7 @@ export const megaMenuPanels: MegaMenuPanel[] = [
       { label: "Overview", href: "#about" },
       { label: "Philosophy", href: "#about" },
       { label: "Metrics", href: "#about" },
-      { label: "Journey", href: "#about" },
+      { label: "Journey", href: "#experience" },
       { label: "Companies", href: "#about" },
     ],
     quickLinks: [
@@ -143,12 +143,12 @@ export const megaMenuPanels: MegaMenuPanel[] = [
   {
     id: "experience",
     label: "Experience",
-    primaryLinks: personal.experience.slice(0, 6).map((item) => ({
+    primaryLinks: personal.experience.map((item) => ({
       label: item.title,
-      href: "#about",
+      href: "#experience",
     })),
     quickLinks: [
-      { label: "Full Timeline", href: "#about" },
+      { label: "Full Timeline", href: "#experience" },
       { label: "Resume", href: personal.resumeUrl },
       { label: "LinkedIn", href: personal.linkedin },
       { label: "Contact", href: "#contact" },
@@ -158,13 +158,13 @@ export const megaMenuPanels: MegaMenuPanel[] = [
         eyebrow: "Current Focus",
         title: latestExperience.title,
         description: `${latestExperience.company} — ${latestExperience.description}`,
-        href: "#about",
+        href: "#experience",
       },
       {
         eyebrow: "Years Building",
-        title: `${personal.yearsExperience}+ years`,
+        title: `${personal.yearsExperience}+ years learning`,
         description: personal.bio.meta,
-        href: "#about",
+        href: "#experience",
       },
     ],
   },

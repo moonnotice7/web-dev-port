@@ -144,7 +144,7 @@ export function Navigation() {
   };
 
   useEffect(() => {
-    const sections = ["home", "about", "skills", "projects", "contact"];
+    const sections = ["home", "about", "experience", "skills", "projects", "contact"];
 
     const observer = new IntersectionObserver(
       (entries) => {

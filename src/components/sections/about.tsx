@@ -75,36 +75,6 @@ export function AboutSection() {
         <div className="mt-section-sm">
           <MetricsGrid />
         </div>
-
-        <div className="mt-section-sm">
-          <FadeIn>
-            <span className="section-label">{personal.sections.about.journeyLabel}</span>
-            <h3 className="mt-8 font-display text-2xl tracking-tight">
-              {personal.sections.about.journeyHeading}
-            </h3>
-          </FadeIn>
-
-          <div className="mt-14 divide-y divide-border border-t border-border">
-            <StaggerContainer staggerDelay={0.04}>
-              {personal.experience.map((item) => (
-                <StaggerItem key={item.year}>
-                  <div className="grid gap-4 py-10 md:grid-cols-12 md:gap-8">
-                    <div className="font-mono text-sm text-muted md:col-span-2">
-                      {item.year}
-                    </div>
-                    <div className="md:col-span-4">
-                      <h4 className="font-display text-lg tracking-tight">{item.title}</h4>
-                      <p className="mt-1 text-sm text-muted">{item.company}</p>
-                    </div>
-                    <p className="text-[15px] leading-[1.8] text-muted md:col-span-6">
-                      {item.description}
-                    </p>
-                  </div>
-                </StaggerItem>
-              ))}
-            </StaggerContainer>
-          </div>
-        </div>
       </div>
     </section>
   );

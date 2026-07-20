@@ -26,10 +26,15 @@ export interface Service {
 }
 
 export interface Experience {
+  id: string;
+  period: string;
   year: string;
   title: string;
   company: string;
   description: string;
+  technologies: string[];
+  achievements: string[];
+  type: "freelance" | "personal" | "academic" | "learning" | "opensource";
 }
 
 export interface Project {
@@ -182,8 +187,12 @@ export const personal = {
     },
     about: {
       label: "About",
-      journeyLabel: "Journey",
-      journeyHeading: "Where I've been",
+    },
+    experience: {
+      label: "Experience",
+      heading: "Building skills, one project at a time",
+      description:
+        "An honest record of freelance work, personal builds, academic projects, and ongoing learning — no fabricated employment history.",
     },
     companies: {
       label: "Previously worked with",
@@ -271,14 +280,88 @@ export const personal = {
     },
   ] satisfies Service[],
 
-  // Experience
+  // Experience — real trajectory only; no fabricated employment history
   experience: [
-    { year: "2024", title: "Principal Engineer", company: "Tech Unicorn", description: "Leading platform architecture for 50K+ user SaaS product" },
-    { year: "2022", title: "Staff Developer", company: "Series B Startup", description: "Built AI-powered developer tools from zero to 12K users" },
-    { year: "2020", title: "Senior Full-Stack", company: "Digital Agency", description: "Delivered 40+ enterprise projects for Fortune 500 clients" },
-    { year: "2018", title: "Full-Stack Developer", company: "FinTech Co", description: "Architected payment infrastructure processing $2M+ monthly" },
-    { year: "2014", title: "Frontend Developer", company: "Startup Studio", description: "Shipped 15 products, learned to wear every hat" },
-    { year: "2012", title: "First Commit", company: "Self-taught", description: "Built first website, fell in love with creating on the web" },
+    {
+      id: "freelance",
+      period: "2024 — Present",
+      year: "2024",
+      title: "Freelance Web Developer",
+      company: "Independent · Accra, Ghana",
+      description:
+        "Designing and delivering responsive websites and web applications for clients, with emphasis on clean UI, performance, and maintainable code.",
+      technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Node.js", "REST APIs", "Responsive Design"],
+      achievements: [
+        "Built client-facing sites with mobile-first layouts and accessible navigation",
+        "Set up contact flows, SEO metadata, and deployment pipelines on Vercel",
+        "Documented handoff-ready codebases for iteration and future maintenance",
+      ],
+      type: "freelance",
+    },
+    {
+      id: "personal-projects",
+      period: "2023 — Present",
+      year: "2023",
+      title: "Personal Projects",
+      company: "Self-directed",
+      description:
+        "Shipping full-stack portfolio and side projects to practise modern tooling, design systems, and production-ready patterns.",
+      technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion"],
+      achievements: [
+        "Developed this portfolio as a demonstration-grade academic and professional showcase",
+        "Implemented dark/light theming, mega-menu navigation, and scroll-driven animations",
+        "Prioritised responsive layouts, semantic HTML, and WCAG-conscious interactions",
+      ],
+      type: "personal",
+    },
+    {
+      id: "academic",
+      period: "2022 — Present",
+      year: "2022",
+      title: "Academic Projects",
+      company: "Coursework & assignments",
+      description:
+        "Applied web development fundamentals through structured briefs — from static pages to interactive React applications.",
+      technologies: ["HTML", "CSS", "JavaScript", "React", "Responsive Design", "Git"],
+      achievements: [
+        "Completed assignments spanning layout, forms, APIs, and component architecture",
+        "Collaborated on team deliverables with documentation and presentation requirements",
+        "Translated briefs into working prototypes under realistic deadline constraints",
+      ],
+      type: "academic",
+    },
+    {
+      id: "learning",
+      period: "2021 — Present",
+      year: "2021",
+      title: "Learning & Development",
+      company: "Continuous study",
+      description:
+        "Structured self-study across frontend frameworks, UI patterns, version control, and deployment workflows.",
+      technologies: ["TypeScript", "React", "Next.js", "Tailwind CSS", "Node.js", "Git"],
+      achievements: [
+        "Followed official documentation, tutorials, and open-source reference implementations",
+        "Practised component design, state management, and REST API integration",
+        "Maintained a consistent habit of finishing small, deployable projects",
+      ],
+      type: "learning",
+    },
+    {
+      id: "opensource",
+      period: "Ongoing",
+      year: "2024",
+      title: "Open Source Contributions",
+      company: "Community (placeholder)",
+      description:
+        "Exploring contribution workflows — documentation, issue triage, and small patches — as skills continue to grow.",
+      technologies: ["Git", "GitHub", "TypeScript", "React"],
+      achievements: [
+        "Studying open-source conventions and contribution guidelines",
+        "Placeholder entry — replace with documented contributions before public deployment",
+        "Preparing to submit fixes, docs, and examples to projects in active use",
+      ],
+      type: "opensource",
+    },
   ] satisfies Experience[],
 
   // Projects
