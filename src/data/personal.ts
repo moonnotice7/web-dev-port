@@ -88,6 +88,7 @@ export interface Testimonial {
   name: string;
   role: string;
   company: string;
+  location: string;
   highlight: string;
 }
 
@@ -214,9 +215,9 @@ export const personal = {
     },
     testimonials: {
       label: "Testimonials",
-      heading: "What collaborators say",
+      heading: "Words from collaborators",
       description:
-        "Feedback from product leaders, designers, and engineers across recent engagements.",
+        "Selected feedback from product leaders, designers, and engineers — sample content for demonstration.",
     },
   },
 
@@ -651,6 +652,7 @@ export const personal = {
       name: "Maya Okonkwo",
       role: "Engineering Lead",
       company: "Atlas Digital Solutions",
+      location: "Lagos, Nigeria",
       highlight: "Clean code",
     },
     {
@@ -660,6 +662,7 @@ export const personal = {
       name: "James Whitfield",
       role: "Product Manager",
       company: "Northline Labs",
+      location: "London, UK",
       highlight: "Communication",
     },
     {
@@ -669,6 +672,7 @@ export const personal = {
       name: "Priya Sharma",
       role: "Design Director",
       company: "Form & Function Studio",
+      location: "Toronto, Canada",
       highlight: "Attention to detail",
     },
     {
@@ -678,6 +682,7 @@ export const personal = {
       name: "Daniel Reyes",
       role: "Chief Technology Officer",
       company: "Meridian Stack Co.",
+      location: "Austin, USA",
       highlight: "Problem-solving",
     },
     {
@@ -687,6 +692,7 @@ export const personal = {
       name: "Amina Foster",
       role: "Engineering Manager",
       company: "Clearwater Systems",
+      location: "Berlin, Germany",
       highlight: "Teamwork",
     },
     {
@@ -696,6 +702,7 @@ export const personal = {
       name: "Kofi Mensah",
       role: "Founder",
       company: "Harborline Apps",
+      location: "Accra, Ghana",
       highlight: "Reliability",
     },
   ] satisfies Testimonial[],
