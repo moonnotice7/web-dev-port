@@ -1,0 +1,15 @@
+---
+description: Push completed code changes to GitHub after implementation
+alwaysApply: true
+---
+
+# Push Changes to GitHub
+
+After completing implementation work in this project:
+
+1. Commit changes with a clear, accurate message following existing repo style.
+2. Push to `origin/main` (or the current working branch) unless the user explicitly says not to push.
+3. Do not push secrets (`.env`, credentials, tokens).
+4. If GitHub auth fails, set up credentials and retry, or give the user exact steps to finish the push.
+
+The remote repository is `https://github.com/moonnotice7/web-dev-port`.
