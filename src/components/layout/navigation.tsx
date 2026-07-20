@@ -25,17 +25,16 @@ export function Navigation() {
   const prefersHover = usePrefersHover();
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileExpanded, setMobileExpanded] = useState<MegaMenuPanelId | null>(null);
-  const [activePanel, setActivePanel] = useState<MegaMenuPanelId | null>(null);
-  const [pinnedPanel, setPinnedPanel] = useState<MegaMenuPanelId | null>(null);
+  const [activeMenu, setActiveMenu] = useState<MegaMenuPanelId | null>(null);
   const [activeSection, setActiveSection] = useState("home");
 
   const headerRef = useRef<HTMLElement>(null);
+  const triggerRefs = useRef<Partial<Record<MegaMenuPanelId, HTMLButtonElement>>>({});
+  const clickPinnedRef = useRef(false);
   const openTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const visiblePanel = pinnedPanel ?? activePanel;
-  const panel = visiblePanel ? getMegaMenuPanel(visiblePanel) : null;
+  const panel = activeMenu ? getMegaMenuPanel(activeMenu) : null;
 
   const clearTimers = useCallback(() => {
     if (openTimerRef.current) clearTimeout(openTimerRef.current);
@@ -44,17 +43,45 @@ export function Navigation() {
     closeTimerRef.current = null;
   }, []);
 
-  const closeMenu = useCallback(() => {
-    clearTimers();
-    setActivePanel(null);
-    setPinnedPanel(null);
-  }, [clearTimers]);
-
-  const openPanel = useCallback(
-    (id: MegaMenuPanelId, pin = false) => {
+  const closeMenu = useCallback(
+    (restoreFocus = false) => {
       clearTimers();
-      setActivePanel(id);
-      if (pin) setPinnedPanel(id);
+      setActiveMenu((current) => {
+        if (restoreFocus && current) {
+          requestAnimationFrame(() => {
+            triggerRefs.current[current]?.focus();
+          });
+        }
+        return null;
+      });
+      clickPinnedRef.current = false;
+    },
+    [clearTimers]
+  );
+
+  const openMenu = useCallback(
+    (id: MegaMenuPanelId, pinned = false) => {
+      clearTimers();
+      setActiveMenu(id);
+      clickPinnedRef.current = pinned;
+    },
+    [clearTimers]
+  );
+
+  const toggleMenu = useCallback(
+    (id: MegaMenuPanelId) => {
+      clearTimers();
+      setActiveMenu((current) => {
+        if (current === id) {
+          clickPinnedRef.current = false;
+          requestAnimationFrame(() => {
+            triggerRefs.current[id]?.focus();
+          });
+          return null;
+        }
+        clickPinnedRef.current = true;
+        return id;
+      });
     },
     [clearTimers]
   );
@@ -62,16 +89,17 @@ export function Navigation() {
   const scheduleOpen = useCallback(
     (id: MegaMenuPanelId) => {
       clearTimers();
-      openTimerRef.current = setTimeout(() => openPanel(id), OPEN_DELAY);
+      openTimerRef.current = setTimeout(() => openMenu(id, false), OPEN_DELAY);
     },
-    [clearTimers, openPanel]
+    [clearTimers, openMenu]
   );
 
   const scheduleClose = useCallback(() => {
     clearTimers();
     closeTimerRef.current = setTimeout(() => {
-      setActivePanel(null);
-      setPinnedPanel(null);
+      if (!clickPinnedRef.current) {
+        setActiveMenu(null);
+      }
     }, CLOSE_DELAY);
   }, [clearTimers]);
 
@@ -81,12 +109,28 @@ export function Navigation() {
   };
 
   const handleTriggerClick = (id: MegaMenuPanelId) => {
-    if (prefersHover) return;
-    if (pinnedPanel === id) {
-      closeMenu();
+    toggleMenu(id);
+  };
+
+  const handleTriggerKeyDown = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    index: number
+  ) => {
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      const next = megaMenuItems[(index + 1) % megaMenuItems.length];
+      triggerRefs.current[next.id]?.focus();
+      if (activeMenu) openMenu(next.id, clickPinnedRef.current);
       return;
     }
-    openPanel(id, true);
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      const prev =
+        megaMenuItems[(index - 1 + megaMenuItems.length) % megaMenuItems.length];
+      triggerRefs.current[prev.id]?.focus();
+      if (activeMenu) openMenu(prev.id, clickPinnedRef.current);
+    }
   };
 
   const handleHeaderLeave = () => {
@@ -129,12 +173,12 @@ export function Navigation() {
   }, [mobileOpen]);
 
   useEffect(() => {
-    if (!pinnedPanel) return;
+    if (!activeMenu) return;
 
     const handlePointerDown = (event: MouseEvent | TouchEvent) => {
       const target = event.target as Node;
       if (headerRef.current && !headerRef.current.contains(target)) {
-        closeMenu();
+        closeMenu(true);
       }
     };
 
@@ -144,39 +188,28 @@ export function Navigation() {
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("touchstart", handlePointerDown);
     };
-  }, [pinnedPanel, closeMenu]);
+  }, [activeMenu, closeMenu]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closeMenu();
+      if (event.key !== "Escape") return;
+
+      if (activeMenu) {
+        event.preventDefault();
+        closeMenu(true);
+      }
+
+      if (mobileOpen) {
         setMobileOpen(false);
-        setMobileExpanded(null);
-        return;
-      }
-
-      if (!visiblePanel || !prefersHover) return;
-
-      const currentIndex = megaMenuItems.findIndex((item) => item.id === visiblePanel);
-      if (currentIndex === -1) return;
-
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        const next = megaMenuItems[(currentIndex + 1) % megaMenuItems.length];
-        openPanel(next.id, Boolean(pinnedPanel));
-      }
-
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        const next =
-          megaMenuItems[(currentIndex - 1 + megaMenuItems.length) % megaMenuItems.length];
-        openPanel(next.id, Boolean(pinnedPanel));
+        setActiveMenu(null);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [closeMenu, openPanel, pinnedPanel, prefersHover, visiblePanel]);
+  }, [activeMenu, closeMenu, mobileOpen]);
+
+  useEffect(() => () => clearTimers(), [clearTimers]);
 
   const motionTransition = prefersReducedMotion
     ? { duration: 0 }
@@ -190,7 +223,7 @@ export function Navigation() {
         onMouseLeave={handleHeaderLeave}
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-colors duration-200",
-          isScrolled || visiblePanel
+          isScrolled || activeMenu
             ? "border-b border-border bg-background/90 backdrop-blur-md"
             : "bg-background/95 backdrop-blur-sm"
         )}
@@ -203,7 +236,7 @@ export function Navigation() {
             href="#home"
             className="text-sm font-medium tracking-tight text-foreground"
             aria-label={`${personal.name} — Home`}
-            onClick={closeMenu}
+            onClick={() => closeMenu()}
           >
             {personal.name}
           </Link>
@@ -213,11 +246,14 @@ export function Navigation() {
             role="menubar"
             aria-label="Primary"
           >
-            {megaMenuItems.map((item) => {
-              const isOpen = visiblePanel === item.id;
+            {megaMenuItems.map((item, index) => {
+              const isOpen = activeMenu === item.id;
               return (
                 <li key={item.id} role="none">
                   <button
+                    ref={(node) => {
+                      if (node) triggerRefs.current[item.id] = node;
+                    }}
                     type="button"
                     role="menuitem"
                     aria-haspopup="true"
@@ -226,6 +262,7 @@ export function Navigation() {
                     onMouseEnter={() => handleTriggerEnter(item.id)}
                     onFocus={() => handleTriggerEnter(item.id)}
                     onClick={() => handleTriggerClick(item.id)}
+                    onKeyDown={(event) => handleTriggerKeyDown(event, index)}
                     className={cn(
                       "inline-flex items-center gap-1.5 text-sm transition-colors duration-200",
                       isOpen ? "text-foreground" : "text-muted hover:text-foreground"
@@ -249,7 +286,7 @@ export function Navigation() {
           <div className="ml-auto flex items-center gap-3">
             <Link
               href="#contact"
-              onClick={closeMenu}
+              onClick={() => closeMenu()}
               className="hidden bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-colors duration-200 hover:bg-accent/90 md:inline-block"
             >
               Contact
@@ -303,7 +340,7 @@ export function Navigation() {
               className="hidden border-t border-border bg-background/85 shadow-[0_24px_60px_-28px_rgba(15,23,42,0.18)] backdrop-blur-xl dark:shadow-[0_24px_60px_-28px_rgba(0,0,0,0.55)] md:block"
               onMouseEnter={handleHeaderEnter}
             >
-              <MegaMenuPanelView panel={panel} onNavigate={closeMenu} />
+              <MegaMenuPanelView panel={panel} onNavigate={() => closeMenu()} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -318,6 +355,12 @@ export function Navigation() {
             exit={{ opacity: 0 }}
             transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
             className="fixed inset-0 z-40 bg-background/95 backdrop-blur-md md:hidden"
+            onClick={(event) => {
+              if (event.target === event.currentTarget) {
+                setMobileOpen(false);
+                setActiveMenu(null);
+              }
+            }}
           >
             <nav
               className="flex h-full flex-col overflow-y-auto px-6 pb-10 pt-28"
@@ -325,7 +368,10 @@ export function Navigation() {
             >
               <Link
                 href="#home"
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  setMobileOpen(false);
+                  setActiveMenu(null);
+                }}
                 className={cn(
                   "border-b border-border py-5 text-2xl font-medium tracking-tight",
                   activeSection === "home" ? "text-foreground" : "text-muted"
@@ -336,18 +382,14 @@ export function Navigation() {
 
               {megaMenuItems.map((item) => {
                 const mobilePanel = getMegaMenuPanel(item.id);
-                const expanded = mobileExpanded === item.id;
+                const expanded = activeMenu === item.id;
                 if (!mobilePanel) return null;
 
                 return (
                   <div key={item.id} className="border-b border-border">
                     <button
                       type="button"
-                      onClick={() =>
-                        setMobileExpanded((current) =>
-                          current === item.id ? null : item.id
-                        )
-                      }
+                      onClick={() => toggleMenu(item.id)}
                       className="flex w-full items-center justify-between py-5 text-left text-2xl font-medium tracking-tight text-foreground"
                       aria-expanded={expanded}
                       aria-controls={`mobile-section-${item.id}`}
@@ -379,7 +421,7 @@ export function Navigation() {
                             panel={mobilePanel}
                             onNavigate={() => {
                               setMobileOpen(false);
-                              setMobileExpanded(null);
+                              setActiveMenu(null);
                             }}
                             className="px-0 pb-8 pt-2"
                           />
@@ -392,7 +434,10 @@ export function Navigation() {
 
               <Link
                 href="#contact"
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  setMobileOpen(false);
+                  setActiveMenu(null);
+                }}
                 className="mt-8 inline-block w-fit bg-accent px-6 py-3 text-sm font-medium text-accent-foreground"
               >
                 Contact
