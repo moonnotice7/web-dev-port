@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --surface: #f8fafc;
+    --card: #ffffff;
+    --foreground: #0f172a;
+    --muted: #475569;
+    --accent: #2563eb;
+    --accent-foreground: #ffffff;
+    --accent-secondary: #0891b2;
+    --border: #e2e8f0;
+    --hover: rgba(15, 23, 42, 0.04);
+    --success: #16a34a;
+    --error: #dc2626;
+    color-scheme: light;
+  }
+
+  .dark {
+    --background: #0a0a0a;
+    --surface: #111827;
+    --card: #1f2937;
+    --foreground: #f9fafb;
+    --muted: #cbd5e1;
+    --accent: #2563eb;
+    --accent-foreground: #ffffff;
+    --accent-secondary: #0891b2;
+    --border: rgba(255, 255, 255, 0.08);
+    --hover: rgba(255, 255, 255, 0.04);
+    --success: #16a34a;
+    --error: #dc2626;
+    color-scheme: dark;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-gutter: stable;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  ::selection {
+    @apply bg-hover text-foreground;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-background;
+  }
+}
+
+@layer components {
+  .section-label {
+    @apply font-mono text-[11px] uppercase tracking-[0.2em] text-muted;
+  }
+
+  .section-label::before {
+    content: "/ ";
+    color: var(--muted);
+    opacity: 0.7;
+  }
+
+  .editorial-rule {
+    @apply h-px w-full bg-border;
+  }
+
+  .editorial-link {
+    @apply inline-flex items-center gap-2 text-sm text-foreground underline decoration-border underline-offset-[6px] transition-colors hover:decoration-foreground;
+  }
+
+  .meta-block {
+    @apply border-t border-border pt-8;
+  }
+
+  .meta-block-title {
+    @apply font-mono text-[10px] uppercase tracking-[0.22em] text-muted;
+  }
+
+  .surface-panel {
+    @apply bg-surface;
+  }
+
+  .interactive-row {
+    @apply transition-colors duration-200 hover:bg-hover;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
