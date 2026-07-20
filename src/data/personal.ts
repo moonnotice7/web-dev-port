@@ -6,18 +6,30 @@
 export type SkillCategory =
   | "Frontend"
   | "Backend"
+  | "Database"
   | "Cloud"
-  | "Databases"
-  | "AI"
   | "DevOps"
-  | "Mobile"
+  | "UI/UX"
+  | "AI"
   | "Tools";
 
+export type SkillProficiency =
+  | "Expert"
+  | "Advanced"
+  | "Proficient"
+  | "Intermediate"
+  | "Learning";
+
 export interface Skill {
+  id: string;
   name: string;
   category: SkillCategory;
-  years: number;
+  proficiency: SkillProficiency;
+  proficiencyScore: number;
   description: string;
+  extendedDescription?: string;
+  related: string[];
+  favorite?: boolean;
 }
 
 export interface Service {
@@ -175,9 +187,9 @@ export const personal = {
     },
     skills: {
       label: "Skills",
-      heading: "Tools & technologies",
+      heading: "Tools I reach for",
       description:
-        "A working set refined over twelve years — tools chosen for reliability and fit, not for display.",
+        "Technologies I use to design, build, and ship — organised by craft, not credentials.",
     },
     projects: {
       label: "Work",
@@ -233,32 +245,177 @@ export const personal = {
 
   // Skills
   skills: [
-    { name: "React", category: "Frontend", years: 8, description: "Component architecture, hooks, performance optimization" },
-    { name: "Next.js", category: "Frontend", years: 6, description: "App Router, SSR, ISR, edge functions" },
-    { name: "TypeScript", category: "Frontend", years: 7, description: "Advanced types, generics, type-safe APIs" },
-    { name: "Tailwind CSS", category: "Frontend", years: 5, description: "Design systems, responsive layouts" },
-    { name: "Vue.js", category: "Frontend", years: 4, description: "Composition API, Nuxt, state management" },
-    { name: "Node.js", category: "Backend", years: 10, description: "REST APIs, microservices, event-driven architecture" },
-    { name: "Python", category: "Backend", years: 6, description: "FastAPI, Django, data processing pipelines" },
-    { name: "GraphQL", category: "Backend", years: 5, description: "Schema design, Apollo, subscriptions" },
-    { name: "Go", category: "Backend", years: 3, description: "High-performance services, concurrency" },
-    { name: "AWS", category: "Cloud", years: 7, description: "Lambda, ECS, S3, CloudFront, RDS" },
-    { name: "Vercel", category: "Cloud", years: 5, description: "Edge deployment, serverless, analytics" },
-    { name: "GCP", category: "Cloud", years: 4, description: "Cloud Run, BigQuery, Firebase" },
-    { name: "PostgreSQL", category: "Databases", years: 9, description: "Query optimization, migrations, indexing" },
-    { name: "Redis", category: "Databases", years: 6, description: "Caching, pub/sub, session management" },
-    { name: "MongoDB", category: "Databases", years: 5, description: "Document modeling, aggregation pipelines" },
-    { name: "OpenAI", category: "AI", years: 3, description: "GPT integration, embeddings, fine-tuning" },
-    { name: "LangChain", category: "AI", years: 2, description: "RAG pipelines, agents, vector stores" },
-    { name: "TensorFlow", category: "AI", years: 2, description: "Model deployment, inference optimization" },
-    { name: "Docker", category: "DevOps", years: 7, description: "Containerization, multi-stage builds" },
-    { name: "Kubernetes", category: "DevOps", years: 4, description: "Orchestration, Helm, service mesh" },
-    { name: "CI/CD", category: "DevOps", years: 8, description: "GitHub Actions, automated testing, deployment" },
-    { name: "React Native", category: "Mobile", years: 4, description: "Cross-platform apps, native modules" },
-    { name: "Flutter", category: "Mobile", years: 2, description: "Dart, widget composition, platform channels" },
-    { name: "Git", category: "Tools", years: 12, description: "Version control, branching strategies, workflows" },
-    { name: "Figma", category: "Tools", years: 6, description: "Design systems, prototyping, handoff" },
-    { name: "VS Code", category: "Tools", years: 8, description: "Extensions, debugging, productivity" },
+    {
+      id: "nextjs",
+      name: "Next.js",
+      category: "Frontend",
+      proficiency: "Advanced",
+      proficiencyScore: 4,
+      description: "App Router, SSR, ISR, and Server Components for production applications.",
+      extendedDescription:
+        "Building performant full-stack applications with App Router, SSR, ISR, Server Components, and modern deployment workflows on Vercel.",
+      related: ["React", "TypeScript", "Tailwind CSS"],
+      favorite: true,
+    },
+    {
+      id: "react",
+      name: "React",
+      category: "Frontend",
+      proficiency: "Advanced",
+      proficiencyScore: 4,
+      description: "Component architecture, hooks, and accessible UI patterns.",
+      extendedDescription:
+        "Composing reusable interfaces with hooks, context, and performance-conscious rendering for portfolio and client work.",
+      related: ["TypeScript", "Next.js", "Framer Motion"],
+      favorite: true,
+    },
+    {
+      id: "typescript",
+      name: "TypeScript",
+      category: "Frontend",
+      proficiency: "Advanced",
+      proficiencyScore: 4,
+      description: "Type-safe components, props, and API contracts.",
+      extendedDescription:
+        "Strict typing across components and utilities — interfaces, unions, and generics that keep refactors predictable.",
+      related: ["React", "Next.js", "Node.js"],
+      favorite: true,
+    },
+    {
+      id: "tailwind",
+      name: "Tailwind CSS",
+      category: "Frontend",
+      proficiency: "Advanced",
+      proficiencyScore: 4,
+      description: "Design systems, responsive layouts, and dark mode tokens.",
+      extendedDescription:
+        "Utility-first styling with semantic tokens, responsive breakpoints, and theme-aware surfaces for light and dark modes.",
+      related: ["CSS", "Figma", "Next.js"],
+    },
+    {
+      id: "html-css",
+      name: "HTML & CSS",
+      category: "Frontend",
+      proficiency: "Proficient",
+      proficiencyScore: 3,
+      description: "Semantic markup, flexbox, grid, and accessible structure.",
+      extendedDescription:
+        "Foundational layout and semantics — forms, landmarks, focus states, and responsive composition before frameworks.",
+      related: ["Tailwind CSS", "Responsive Design", "React"],
+    },
+    {
+      id: "framer-motion",
+      name: "Framer Motion",
+      category: "Frontend",
+      proficiency: "Proficient",
+      proficiencyScore: 3,
+      description: "Scroll reveals, layout transitions, and micro-interactions.",
+      related: ["React", "Next.js", "TypeScript"],
+    },
+    {
+      id: "nodejs",
+      name: "Node.js",
+      category: "Backend",
+      proficiency: "Proficient",
+      proficiencyScore: 3,
+      description: "REST APIs, route handlers, and server-side logic.",
+      extendedDescription:
+        "Lightweight backend routes, form handling, and integration with external services in Next.js and standalone scripts.",
+      related: ["TypeScript", "REST APIs", "PostgreSQL"],
+    },
+    {
+      id: "rest",
+      name: "REST APIs",
+      category: "Backend",
+      proficiency: "Proficient",
+      proficiencyScore: 3,
+      description: "JSON endpoints, validation, and client integration.",
+      related: ["Node.js", "TypeScript", "Fetch"],
+    },
+    {
+      id: "postgresql",
+      name: "PostgreSQL",
+      category: "Database",
+      proficiency: "Intermediate",
+      proficiencyScore: 2,
+      description: "Relational modelling, queries, and migrations.",
+      related: ["Node.js", "SQL", "REST APIs"],
+    },
+    {
+      id: "mongodb",
+      name: "MongoDB",
+      category: "Database",
+      proficiency: "Learning",
+      proficiencyScore: 1,
+      description: "Document storage and basic aggregation patterns.",
+      related: ["Node.js", "REST APIs"],
+    },
+    {
+      id: "vercel",
+      name: "Vercel",
+      category: "Cloud",
+      proficiency: "Advanced",
+      proficiencyScore: 4,
+      description: "Preview deployments, edge hosting, and production pipelines.",
+      extendedDescription:
+        "Deploying Next.js applications with preview URLs, environment variables, and continuous deployment from GitHub.",
+      related: ["Next.js", "Git", "GitHub Actions"],
+      favorite: true,
+    },
+    {
+      id: "git",
+      name: "Git",
+      category: "DevOps",
+      proficiency: "Proficient",
+      proficiencyScore: 3,
+      description: "Branching, commits, pull requests, and collaboration.",
+      related: ["GitHub", "GitHub Actions", "VS Code"],
+    },
+    {
+      id: "github-actions",
+      name: "GitHub Actions",
+      category: "DevOps",
+      proficiency: "Intermediate",
+      proficiencyScore: 2,
+      description: "CI workflows, linting, and automated checks.",
+      related: ["Git", "Vercel", "Node.js"],
+    },
+    {
+      id: "figma",
+      name: "Figma",
+      category: "UI/UX",
+      proficiency: "Intermediate",
+      proficiencyScore: 2,
+      description: "Layout exploration, spacing systems, and handoff.",
+      related: ["Tailwind CSS", "Responsive Design", "HTML & CSS"],
+    },
+    {
+      id: "responsive",
+      name: "Responsive Design",
+      category: "UI/UX",
+      proficiency: "Advanced",
+      proficiencyScore: 4,
+      description: "Mobile-first layouts that scale across breakpoints.",
+      related: ["Tailwind CSS", "HTML & CSS", "Figma"],
+    },
+    {
+      id: "openai",
+      name: "OpenAI API",
+      category: "AI",
+      proficiency: "Learning",
+      proficiencyScore: 1,
+      description: "Prompt design and API integration experiments.",
+      related: ["Node.js", "TypeScript", "REST APIs"],
+    },
+    {
+      id: "vscode",
+      name: "VS Code",
+      category: "Tools",
+      proficiency: "Proficient",
+      proficiencyScore: 3,
+      description: "Extensions, debugging, and daily development workflow.",
+      related: ["Git", "TypeScript", "ESLint"],
+    },
   ] satisfies Skill[],
 
   // Services
@@ -544,10 +701,19 @@ export const personal = {
   ] satisfies Testimonial[],
 } as const;
 
-/** Skill categories derived from skills list */
-export const skillCategories = Array.from(
-  new Set(personal.skills.map((s) => s.category))
-) as SkillCategory[];
+/** Skill categories in display order */
+export const skillCategories = (
+  [
+    "Frontend",
+    "Backend",
+    "Database",
+    "Cloud",
+    "DevOps",
+    "UI/UX",
+    "AI",
+    "Tools",
+  ] as SkillCategory[]
+).filter((category) => personal.skills.some((skill) => skill.category === category));
 
 /** Social URLs for schema.org sameAs */
 export const socialUrls = personal.socialLinks
