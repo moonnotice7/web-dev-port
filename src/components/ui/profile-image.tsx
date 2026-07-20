@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Camera } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const PROFILE_SRC = "/images/profile.jpg";
@@ -13,24 +12,50 @@ interface ProfileImageProps {
   imageClassName?: string;
   priority?: boolean;
   sizes?: string;
+  variant?: "default" | "hero";
+  initials?: string;
 }
 
-function ProfilePlaceholder({ className }: { className?: string }) {
+function ProfileFallback({
+  className,
+  initials = "ET",
+  variant = "default",
+}: {
+  className?: string;
+  initials?: string;
+  variant?: "default" | "hero";
+}) {
   return (
     <div
       className={cn(
-        "flex h-full w-full flex-col items-center justify-center gap-4 border border-dashed border-border bg-surface px-6 text-center",
+        "flex h-full w-full items-center justify-center bg-surface",
+        variant === "default" &&
+          "flex-col gap-4 border border-dashed border-border px-6 text-center",
         className
       )}
       role="img"
-      aria-label="Add Your Profile Photo"
+      aria-label={altFallbackLabel(initials)}
     >
-      <Camera className="h-8 w-8 text-muted" strokeWidth={1.5} aria-hidden="true" />
-      <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
-        Add Your Profile Photo
-      </p>
+      <span
+        className={cn(
+          "font-display tracking-tight text-muted/35",
+          variant === "hero" ? "text-6xl xl:text-7xl" : "text-3xl"
+        )}
+        aria-hidden="true"
+      >
+        {initials}
+      </span>
+      {variant === "default" ? (
+        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+          Add profile photo
+        </p>
+      ) : null}
     </div>
   );
+}
+
+function altFallbackLabel(initials: string) {
+  return `Profile photo placeholder showing initials ${initials}`;
 }
 
 export function ProfileImage({
@@ -38,7 +63,9 @@ export function ProfileImage({
   className,
   imageClassName,
   priority = false,
-  sizes = "(max-width: 1024px) 80vw, 33vw",
+  sizes = "(max-width: 1024px) 80vw, 320px",
+  variant = "default",
+  initials = "ET",
 }: ProfileImageProps) {
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
 
@@ -61,9 +88,13 @@ export function ProfileImage({
           sizes={sizes}
         />
       ) : hasProfile === false ? (
-        <ProfilePlaceholder className="absolute inset-0" />
+        <ProfileFallback
+          className="absolute inset-0"
+          initials={initials}
+          variant={variant}
+        />
       ) : (
-        <div className="absolute inset-0 bg-surface" aria-hidden="true" />
+        <div className="absolute inset-0 animate-pulse bg-surface" aria-hidden="true" />
       )}
     </div>
   );
